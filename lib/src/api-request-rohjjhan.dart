@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 
 void main() {
-  final client = new Client();
+  final client = new ApiClient();
   String url = "https://api.magicthegathering.io/v1/cards";
   // client.post(url).then((response) {
   //   print("Response status: ${response.statusCode}");
@@ -21,6 +21,7 @@ class ApiClient extends BaseClient {
 
   @override
   Future<StreamedResponse> send(BaseRequest request) {
+    print(request.url);
     request.headers['content-type'] = 'application/json';
     return _client.send(request);
   }
