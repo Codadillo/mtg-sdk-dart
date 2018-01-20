@@ -3,14 +3,21 @@ import 'dart:async';
 import 'dart:convert';
 
 void main() {
-  final client = new ApiClient();
-  String url = "https://api.magicthegathering.io/v1/cards";
+  final client = new Client();
+  String url = "https://api.magicthegathering.io/v1/cards?name=%22%27Storm%20Crow%27%22";
   // client.post(url).then((response) {
+  //   print("post: ");
   //   print("Response status: ${response.statusCode}");
   //   print("Response body: ${response.body}");
   // });
-  client.read(url, ).then(print);
-  // client.get(url).then(print);
+  client.read(url).then((response) {
+    print("read: ");
+    print(response);
+  });
+  client.get(url).then((response) {
+    print("get: ");
+    print(JSON.decode(response.body)["cards"]);
+  });
 
 }
 
@@ -21,7 +28,6 @@ class ApiClient extends BaseClient {
 
   @override
   Future<StreamedResponse> send(BaseRequest request) {
-    print(request.url);
     request.headers['content-type'] = 'application/json';
     return _client.send(request);
   }
@@ -47,6 +53,7 @@ class ApiRequest {
 
 class ApiResponse extends Response {
   dynamic data;
+  String get getData => data;
 
   ApiResponse(String body, this.data, int statusCode,
       {BaseRequest request,
@@ -60,6 +67,7 @@ class ApiResponse extends Response {
             isRedirect: isRedirect,
             persistentConnection: persistentConnection,
             reasonPhrase: reasonPhrase);
+
 
   static Future<Response> fromStream(StreamedResponse response) async {
     final stream = response.stream;
