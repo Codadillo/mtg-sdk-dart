@@ -8,7 +8,7 @@ final cards card = new cards();
 final sets set = new sets();
 
 abstract class Product {
-  Future<dynamic> find(final dynamic id) async {
+  Future<dynamic> find2(final dynamic id) async {
     final Response response =
         await client.get("$endpoint/${this.runtimeType}/$id");
     final dynamic decodedResponse = JSON.decode(response.body);
@@ -49,11 +49,19 @@ abstract class Product {
   }
 }
 
-class cards extends Product {}
-class sets extends Product {}
+class cards extends Product {
+  Future<dynamic> find(final int id) async {
+    return await super.find2(id);
+  }
+}
+class sets extends Product {
+  Future<dynamic> find(final String id) async {
+    return await super.find2(id);
+  }
+}
 
 main() async  {
-  dynamic response = (await card.where({"name": '"Storm Crow"'}));
-  print(response.length);
+  dynamic response = (await set.find('aer'));
+  print(response);
   // cards.where({"no": "yes"});
 }
