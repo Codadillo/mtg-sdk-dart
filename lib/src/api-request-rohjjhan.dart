@@ -2,25 +2,6 @@ import 'package:http/http.dart';
 import 'dart:async';
 import 'dart:convert';
 
-void main() {
-  final client = new Client();
-  String url = "https://api.magicthegathering.io/v1/cards?name=%22%27Storm%20Crow%27%22";
-  // client.post(url).then((response) {
-  //   print("post: ");
-  //   print("Response status: ${response.statusCode}");
-  //   print("Response body: ${response.body}");
-  // });
-  client.read(url).then((response) {
-    print("read: ");
-    print(response);
-  });
-  client.get(url).then((response) {
-    print("get: ");
-    print(JSON.decode(response.body)["cards"]);
-  });
-
-}
-
 class ApiClient extends BaseClient {
   final Client _client = new Client();
 
