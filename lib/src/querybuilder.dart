@@ -12,7 +12,8 @@ abstract class Product {
     final Response response =
         await client.get("$endpoint/${this.runtimeType}/$id");
     final dynamic decodedResponse = JSON.decode(response.body);
-    print(decodedResponse.values.first);
+    if (decodedResponse.containsKey("error")) return decodedResponse;
+    // print(decodedResponse.values.first);
     return decodedResponse.values.first;
   }
 
@@ -20,7 +21,8 @@ abstract class Product {
     final Response response = await client
         .get("$endpoint/${this.runtimeType}?${assembleAttributes(attributes)}");
     final dynamic decodedResponse = JSON.decode(response.body);
-    print(decodedResponse.values.first);
+    if (decodedResponse.containsKey("error")) return decodedResponse;
+    // print(decodedResponse.values.first)
     return decodedResponse.values.first;
   }
 
