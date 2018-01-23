@@ -1,10 +1,7 @@
 import 'package:test/test.dart';
 import '../lib/src/querybuilder.dart';
-import 'dart:async';
 
-main() async {
-  (await card.where({"set": "MIR", "colors": ["Blue", "Black"]})).forEach((c) => print(c["name"]));
-
+main(){
   test("card.find() should return the card of the given id (Teferi's Imp).", () async {
     dynamic teferis_imp = await card.find(3369);
     expect(teferis_imp["name"], equals("Teferi's Imp"));
@@ -34,5 +31,3 @@ main() async {
     expect(where_page_test.runtimeType.toString(), equals("List"));
   });
 }
-
-//expect(teferis_imp[""], equals(""));
