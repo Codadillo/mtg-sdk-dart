@@ -1,8 +1,8 @@
 import 'package:test/test.dart';
 import '../lib/src/querybuilder.dart';
 
-main(){
-  test("card.find() should return the card of the given id (Teferi's Imp).", () async {
+void main() {
+  test("card.find() should return the card of the given id.", () async {
     dynamic teferis_imp = await card.find(3369);
     expect(teferis_imp["name"], equals("Teferi's Imp"));
     expect(teferis_imp["manaCost"], equals("{2}{U}"));
@@ -23,7 +23,7 @@ main(){
     expect(where_general_test.length, equals(5));
   });
 
-  test("card.where() should be able to control the page number and page size", () async {
+  test("card.where() should be able to control the page number and size", () async {
     dynamic where_page_test = await card.where({"set": "MIR", "page": 2, "pageSize": 54});
     expect(where_page_test.first["name"], equals("Forbidden Crypt"));
     expect(where_page_test.last["name"], equals("Merfolk Raiders"));
