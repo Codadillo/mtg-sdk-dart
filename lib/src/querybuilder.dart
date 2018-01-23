@@ -30,7 +30,7 @@ abstract class Product {
           .message;
     decodedResponse = decodedResponse.values.first;
     if (properties.containsKey("page")) return decodedResponse;
-    int page = 0;
+    int page = 1;
     dynamic pageResponse = [-1];
     while (!pageResponse.isEmpty) {
       ++page;
@@ -67,8 +67,4 @@ class sets extends Product {
   Future<dynamic> find(final String id) async {
     return await super.findProduct(id);
   }
-}
-
-main() async {
-  print(await card.find(-3));
 }
