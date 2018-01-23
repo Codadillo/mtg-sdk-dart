@@ -1,8 +1,7 @@
 name: mtg_sdk_dart
-description: A starting point for Dart libraries or applications.
+description: An sdk for api.magicthegathering.io
 version: 0.0.1
-#homepage: https://www.example.com
-#author: Codadillo <email@example.com>
+#author: Codadillo
 
 environment:
   sdk: '>=1.20.1 <2.0.0'
