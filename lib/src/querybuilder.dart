@@ -33,12 +33,13 @@ abstract class Product {
     if (properties.containsKey("page")) return decodedResponse;
     int page = 1;
     dynamic pageResponse = [-1];
-    while (!pageResponse.isEmpty) {
+    while (pageResponse.isNotEmpty) {
       ++page;
       pageResponse =
           JSON.decode((await _client.get("$url&page=$page")).body).values.first;
       decodedResponse.addAll(pageResponse);
     }
+    if (decodedResponse.values.first.isEmpty()) throw new QueryException("404", "Not Found", url, properties);
     return decodedResponse;
   }
 
