@@ -3,15 +3,17 @@ import 'dart:convert';
 import 'dart:async';
 import 'custom_exceptions.dart';
 
-final Client client = new Client();
-final String endpoint = "http://api.magicthegathering.io/v1";
-final cards card = new cards();
-final sets set = new sets();
+final Client _client = new Client();
+const String apiUrl = "http://api.magicthegathering.io/v1";
+final Card cards = new Card();
+final Set sets = new Set();
 
 abstract class Product {
+  String get endpoint;
+
   Future<dynamic> findProduct(dynamic id) async {
     final Response response =
-        await client.get("$endpoint/${this.runtimeType}/$id");
+        await _client.get("$apiUrl/$endpoint/$id");
     final dynamic decodedResponse = JSON.decode(response.body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(
@@ -22,8 +24,8 @@ abstract class Product {
 
   Future<dynamic> where(Map<String, dynamic> properties) async {
     final String url =
-        "$endpoint/${this.runtimeType}?${assembleProperties(properties)}";
-    dynamic decodedResponse = JSON.decode((await client.get(url)).body);
+        "$apiUrl/$endpoint?${assembleProperties(properties)}";
+    dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(
               decodedResponse["status"], decodedResponse["error"], properties)
@@ -35,7 +37,7 @@ abstract class Product {
     while (!pageResponse.isEmpty) {
       ++page;
       pageResponse =
-          JSON.decode((await client.get("$url&page=$page")).body).values.first;
+          JSON.decode((await _client.get("$url&page=$page")).body).values.first;
       decodedResponse.addAll(pageResponse);
     }
     return decodedResponse;
@@ -57,13 +59,17 @@ abstract class Product {
   }
 }
 
-class cards extends Product {
+class Card extends Product {
+  String get endpoint => 'cards';
+
   Future<dynamic> find(final int id) async {
     return await super.findProduct(id);
   }
 }
 
-class sets extends Product {
+class Set extends Product {
+  String get endpoint => 'sets';
+
   Future<dynamic> find(final String id) async {
     return await super.findProduct(id);
   }
