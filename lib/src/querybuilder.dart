@@ -12,23 +12,22 @@ abstract class Product {
   String get endpoint;
 
   Future<dynamic> findProduct(dynamic id) async {
-    final Response response =
-        await _client.get("$apiUrl/$endpoint/$id");
+    final String url = "$apiUrl/$endpoint/$id";
+    final Response response = await _client.get(url);
     final dynamic decodedResponse = JSON.decode(response.body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(
-              decodedResponse["status"], decodedResponse["error"], "id: $id")
+              decodedResponse["status"], decodedResponse["error"], url, "id: $id")
           .message;
     return decodedResponse.values.first;
   }
 
   Future<dynamic> where(Map<String, dynamic> properties) async {
-    final String url =
-        "$apiUrl/$endpoint?${assembleProperties(properties)}";
+    final String url = "$apiUrl/$endpoint?${assembleProperties(properties)}";
     dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
-      throw new QueryException(
-              decodedResponse["status"], decodedResponse["error"], properties)
+      throw new QueryException(decodedResponse["status"],
+              decodedResponse["error"], url, properties)
           .message;
     decodedResponse = decodedResponse.values.first;
     if (properties.containsKey("page")) return decodedResponse;
@@ -47,7 +46,7 @@ abstract class Product {
     String a = "";
     for (var f in properties.keys) {
       a += "&$f=";
-      if (properties[f].runtimeType.toString() == "List")
+      if (properties[f] is List)
         for (var r in properties[f]) {
           a += r;
           if (r != properties[f].last) a += ",";
