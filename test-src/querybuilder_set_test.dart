@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../lib/src/querybuilder.dart';
+import '../lib/mtg_sdk_dart.dart';
 
 void main() {
   test("set.find() should return the set of the given id.", () async {

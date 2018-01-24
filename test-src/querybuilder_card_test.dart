@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../lib/src/querybuilder.dart';
+import '../lib/mtg_sdk_dart.dart';
 
 void main() {
   test("card.find() should return the card of the given id.", () async {
