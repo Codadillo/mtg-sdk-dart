@@ -14,8 +14,7 @@ abstract class QueryBuilder {
 
   Future<dynamic> findProduct(dynamic id) async {
     final String url = "$apiUrl/$endpoint/$id";
-    final Response response = await _client.get(url);
-    final dynamic decodedResponse = JSON.decode(response.body);
+    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(decodedResponse["status"],
               decodedResponse["error"], url, "id: $id")
@@ -69,19 +68,40 @@ abstract class QueryBuilder {
 class Card extends QueryBuilder {
   String get endpoint => 'cards';
 
-  Future<dynamic> find(final int id) async {
+  Future<dynamic> find(int id) async {
     return await super.findProduct(id);
+  }
+
+  Future<dynamic> types() async {
+    final String url = "$apiUrl/types";
+    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    if (decodedResponse.containsKey("error"))
+      throw new QueryException(decodedResponse["status"],
+              decodedResponse["error"], url, "types")
+          .message;
+    return decodedResponse.values.first;
   }
 }
 
 class Set extends QueryBuilder {
   String get endpoint => 'sets';
 
-  Future<dynamic> find(final String id) async {
+  Future<dynamic> find(String id) async {
     return await super.findProduct(id);
+  }
+
+  Future<dynamic> generateBooster(String id) async {
+    final String url = "$apiUrl/$endpoint/$id/booster";
+    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    if (decodedResponse.containsKey("error"))
+      throw new QueryException(decodedResponse["status"],
+              decodedResponse["error"], url, "id: $id")
+          .message;
+    return decodedResponse.values.first;
   }
 }
 
 main() async {
-  print(await cards.resultSize(100).where({}));
+  // print(await sets.generateBooster('MIR'));
 }
+  
