@@ -60,7 +60,7 @@ abstract class QueryBuilder {
     return a;
   }
 
-  QueryBuilder limitResults(int pageCap) {
+  QueryBuilder resultSize(int pageCap) {
     this.pageCap = pageCap;
     return this;
   }
@@ -83,5 +83,5 @@ class Set extends QueryBuilder {
 }
 
 main() async {
-  // print(await cards.limitSize(resultCap: 100).where({}));
+  print(await cards.resultSize(100).where({}));
 }
