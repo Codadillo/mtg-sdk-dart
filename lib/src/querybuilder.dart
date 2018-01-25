@@ -10,7 +10,6 @@ final Set sets = new Set();
 
 abstract class QueryBuilder {
   String get endpoint;
-  int resultCap = 10000000;
   int pageCap = 100000000;
 
   Future<dynamic> findProduct(dynamic id) async {
@@ -35,14 +34,13 @@ abstract class QueryBuilder {
     if (decodedResponse.isEmpty)
       throw new QueryException("404", "Not Found", url, properties).message;
     if (properties.containsKey("page")) return decodedResponse;
-    int page = 1;
+    int page = 2;
     dynamic pageResponse = [-1];
-    properties["pageSize"] ??= 100;
-    while (!pageResponse.isEmpty && properties["pageSize"] * page <= resultCap && page <= pageCap) {
-      ++page;
+    while (pageResponse.isNotEmpty && page <= pageCap) {
       pageResponse =
           JSON.decode((await _client.get("$url&page=$page")).body).values.first;
       decodedResponse.addAll(pageResponse);
+      ++page;
     }
     return decodedResponse;
   }
@@ -62,9 +60,8 @@ abstract class QueryBuilder {
     return a;
   }
 
-  QueryBuilder limitSize({int resultCap, int pageCap}) {
-    if (resultCap != null) this.resultCap = resultCap;
-    if (pageCap != null) this.pageCap = pageCap;
+  QueryBuilder limitResults(int pageCap) {
+    this.pageCap = pageCap;
     return this;
   }
 }
