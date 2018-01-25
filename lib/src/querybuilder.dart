@@ -62,13 +62,9 @@ abstract class QueryBuilder {
     return a;
   }
 
-  QueryBuilder limitResults(int resultCap) {
-    this.resultCap = resultCap;
-    return this;
-  }
-
-  QueryBuilder limitPages(int pageCap) {
-    this.pageCap = pageCap;
+  QueryBuilder limitSize({int resultCap, int pageCap}) {
+    if (resultCap != null) this.resultCap = resultCap;
+    if (pageCap != null) this.pageCap = pageCap;
     return this;
   }
 }
@@ -90,6 +86,5 @@ class Set extends QueryBuilder {
 }
 
 main() async {
-  print(await cards.limitResults(100).where({"name": "Storm Crow"}));
-
+  // print(await cards.limitSize(resultCap: 100).where({}));
 }
