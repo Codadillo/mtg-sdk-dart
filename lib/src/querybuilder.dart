@@ -91,6 +91,16 @@ class Card extends QueryBuilder {
           .message;
     return decodedResponse.values.first;
   }
+
+  Future<dynamic> supertypes() async {
+    final String url = "$apiUrl/supertypes";
+    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    if (decodedResponse.containsKey("error"))
+      throw new QueryException(decodedResponse["status"],
+              decodedResponse["error"], url, "supertypes")
+          .message;
+    return decodedResponse.values.first;
+  }
 }
 
 class Set extends QueryBuilder {
