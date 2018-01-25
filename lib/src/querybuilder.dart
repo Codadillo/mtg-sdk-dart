@@ -12,7 +12,7 @@ abstract class QueryBuilder {
   String get endpoint;
   int pageCap = 100000000;
 
-  Future<dynamic> findProduct(dynamic id) async {
+  Future<dynamic> _findProduct(dynamic id) async {
     final String url = "$apiUrl/$endpoint/$id";
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
@@ -22,8 +22,18 @@ abstract class QueryBuilder {
     return decodedResponse.values.first;
   }
 
+  Future<dynamic> _findGeneral(String id) async {
+    final String url = "$apiUrl/$id";
+    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    if (decodedResponse.containsKey("error"))
+      throw new QueryException(decodedResponse["status"],
+              decodedResponse["error"], url, "id: $id")
+          .message;
+    return decodedResponse.values.first;
+  }
+
   Future<dynamic> where(Map<String, dynamic> properties) async {
-    final String url = "$apiUrl/$endpoint?${assembleProperties(properties)}";
+    final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
     dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(decodedResponse["status"],
@@ -44,7 +54,7 @@ abstract class QueryBuilder {
     return decodedResponse;
   }
 
-  String assembleProperties(Map<String, dynamic> properties) {
+  String _assembleProperties(Map<String, dynamic> properties) {
     String a = "";
     for (var f in properties.keys) {
       a += "&$f=";
@@ -69,45 +79,20 @@ class Card extends QueryBuilder {
   String get endpoint => 'cards';
 
   Future<dynamic> find(int id) async {
-    return await super.findProduct(id);
+    return await super._findProduct(id);
   }
 
-  Future<dynamic> types() async {
-    final String url = "$apiUrl/types";
-    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
-              decodedResponse["error"], url, "types")
-          .message;
-    return decodedResponse.values.first;
-  }
-
-  Future<dynamic> subtypes() async {
-    final String url = "$apiUrl/subtypes";
-    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
-              decodedResponse["error"], url, "subtypes")
-          .message;
-    return decodedResponse.values.first;
-  }
-
-  Future<dynamic> supertypes() async {
-    final String url = "$apiUrl/supertypes";
-    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
-              decodedResponse["error"], url, "supertypes")
-          .message;
-    return decodedResponse.values.first;
-  }
+  Future<dynamic> subtypes() async => super._findGeneral("subtypes");
+  Future<dynamic> supertypes() async => super._findGeneral("supertypes");
+  Future<dynamic> types() async => super._findGeneral("types");
+  Future<dynamic> formats() async => super._findGeneral("formats");
 }
 
 class Set extends QueryBuilder {
   String get endpoint => 'sets';
 
   Future<dynamic> find(String id) async {
-    return await super.findProduct(id);
+    return await super._findProduct(id);
   }
 
   Future<dynamic> generateBooster(String id) async {
