@@ -10,7 +10,7 @@ final Set sets = new Set();
 
 abstract class QueryBuilder {
   String get endpoint;
-  int pageCap = 100000000;
+  int pageCap = double.MAX_FINITE.toInt();
 
   Future<dynamic> where(Map<String, dynamic> properties) async {
     final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
@@ -92,8 +92,10 @@ class Set extends QueryBuilder {
     final String url = "$apiUrl/$endpoint/$id/booster";
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
-      throw new QueryException(this,
-          decodedResponse["status"], decodedResponse["error"], url, "id: $id");
+      throw new QueryException(this, decodedResponse["status"],
+          decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
   }
 }
+
+main() async => await cards.where({"set": "MIR"});

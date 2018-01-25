@@ -35,7 +35,7 @@ class WhereException extends QueryException {
         for (var property in properties.keys) {
           try {
             await queryType
-                .where({"pageSize": "1", property: properties[property]});
+                .where({"page": 1, "pageSize": "1", property: properties[property]});
           } catch (e) {
             if (e.status == "404")
               failedProperties[property] = properties[property];
