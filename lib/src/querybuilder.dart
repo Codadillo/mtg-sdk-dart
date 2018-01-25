@@ -81,6 +81,16 @@ class Card extends QueryBuilder {
           .message;
     return decodedResponse.values.first;
   }
+
+  Future<dynamic> subtypes() async {
+    final String url = "$apiUrl/subtypes";
+    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    if (decodedResponse.containsKey("error"))
+      throw new QueryException(decodedResponse["status"],
+              decodedResponse["error"], url, "subtypes")
+          .message;
+    return decodedResponse.values.first;
+  }
 }
 
 class Set extends QueryBuilder {
