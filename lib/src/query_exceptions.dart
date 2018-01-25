@@ -17,6 +17,10 @@ class QueryException implements Exception {
     message =
         "Error $status while querying. '$error' at $url with search terms: \n$properties";
   }
+
+  String toString() {
+    return "Exception: $message";
+  }
 }
 
 class WhereException extends QueryException {
@@ -27,7 +31,7 @@ class WhereException extends QueryException {
   Future<dynamic> debug404() async {
     if (status == "404") {
       dynamic failedProperties = {};
-      if (!properties.contains("pageSize") && !properties.contains("page"))
+      if (!properties.keys.contains("pageSize") && !properties.keys.contains("page"))
         for (var property in properties.keys) {
           try {
             await queryType

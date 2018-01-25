@@ -17,12 +17,10 @@ abstract class QueryBuilder {
     dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new WhereException(this, decodedResponse["status"],
-              decodedResponse["error"], url, properties)
-          .message;
+          decodedResponse["error"], url, properties);
     decodedResponse = decodedResponse.values.first;
     if (decodedResponse.isEmpty)
-      throw new WhereException(this, "404", "Not Found", url, properties)
-          .message;
+      throw new WhereException(this, "404", "Not Found", url, properties);
     if (properties.containsKey("page")) return decodedResponse;
     int page = 2;
     dynamic pageResponse = [-1];
@@ -45,8 +43,7 @@ abstract class QueryBuilder {
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(this, decodedResponse["status"],
-              decodedResponse["error"], url, "id: $id")
-          .message;
+          decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
   }
 
@@ -55,8 +52,7 @@ abstract class QueryBuilder {
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(this, decodedResponse["status"],
-              decodedResponse["error"], url, "id: $id")
-          .message;
+          decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
   }
 
@@ -96,13 +92,8 @@ class Set extends QueryBuilder {
     final String url = "$apiUrl/$endpoint/$id/booster";
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
-              decodedResponse["error"], url, "id: $id")
-          .message;
+      throw new QueryException(this,
+          decodedResponse["status"], decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
   }
-}
-
-main() async {
-  // print(await sets.generateBooster('MIR'));
 }
