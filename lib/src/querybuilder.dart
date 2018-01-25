@@ -16,12 +16,13 @@ abstract class QueryBuilder {
     final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
     dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
+      throw new WhereException(this, decodedResponse["status"],
               decodedResponse["error"], url, properties)
           .message;
     decodedResponse = decodedResponse.values.first;
     if (decodedResponse.isEmpty)
-      throw new QueryException("404", "Not Found", url, properties).message;
+      throw new WhereException(this, "404", "Not Found", url, properties)
+          .message;
     if (properties.containsKey("page")) return decodedResponse;
     int page = 2;
     dynamic pageResponse = [-1];
@@ -43,7 +44,7 @@ abstract class QueryBuilder {
     final String url = "$apiUrl/$endpoint/$id";
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
+      throw new QueryException(this, decodedResponse["status"],
               decodedResponse["error"], url, "id: $id")
           .message;
     return decodedResponse.values.first;
@@ -53,7 +54,7 @@ abstract class QueryBuilder {
     final String url = "$apiUrl/$id";
     final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
-      throw new QueryException(decodedResponse["status"],
+      throw new QueryException(this, decodedResponse["status"],
               decodedResponse["error"], url, "id: $id")
           .message;
     return decodedResponse.values.first;
