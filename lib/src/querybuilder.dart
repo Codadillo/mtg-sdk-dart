@@ -88,14 +88,5 @@ class Set extends QueryBuilder {
 
   Future<dynamic> find(String id) async => await super._findProduct(id);
 
-  Future<dynamic> generateBooster(String id) async {
-    final String url = "$apiUrl/$endpoint/$id/booster";
-    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
-      throw new QueryException(this, decodedResponse["status"],
-          decodedResponse["error"], url, "id: $id");
-    return decodedResponse.values.first;
-  }
+  Future<dynamic> generateBooster(String id) async => await super._findGeneral("$id/booster");
 }
-
-main() async => await cards.where({"set": "MIR"});
