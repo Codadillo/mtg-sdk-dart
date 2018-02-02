@@ -38,7 +38,7 @@ abstract class QueryBuilder {
     return this;
   }
 
-  Future<List> _findProduct(dynamic id) async {
+  Future<List> _findProduct(var id) async {
     final String url = "$apiUrl/$endpoint/$id";
     final decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
