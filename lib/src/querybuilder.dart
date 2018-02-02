@@ -4,9 +4,9 @@ import 'dart:async';
 import 'query_exceptions.dart';
 
 final Client _client = new Client();
-const String apiUrl = "http://api.magicthegathering.io/v1";
 final Card cards = new Card();
 final Set sets = new Set();
+const String apiUrl = "http://api.magicthegathering.io/v1";
 
 abstract class QueryBuilder {
   String get endpoint;
@@ -73,7 +73,13 @@ abstract class QueryBuilder {
 }
 
 class Card extends QueryBuilder {
+  Card._internal();
+  static final Card _singleton = new Card._internal();
   String get endpoint => 'cards';
+
+  factory Card() {
+    return _singleton;
+  }
 
   Future<List> find(int id) async => await super._findProduct(id);
 
@@ -84,7 +90,14 @@ class Card extends QueryBuilder {
 }
 
 class Set extends QueryBuilder {
+  Set._internal();
+  static final Set _singleton = new Set._internal();
   String get endpoint => 'sets';
+
+  factory Set() {
+    return _singleton;
+  }
+
 
   Future<List> find(String id) async => await super._findProduct(id);
 
