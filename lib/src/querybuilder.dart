@@ -10,11 +10,11 @@ final Set sets = new Set();
 
 abstract class QueryBuilder {
   String get endpoint;
-  int pageCap = double.MAX_FINITE.toInt();
+  num pageCap = double.MAX_FINITE;
 
-  Future<dynamic> where(Map<String, dynamic> properties) async {
+  Future<List> where(Map<String, dynamic> properties) async {
     final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
-    dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    var decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new WhereException(this, decodedResponse["status"],
           decodedResponse["error"], url, properties);
@@ -23,7 +23,7 @@ abstract class QueryBuilder {
       throw new WhereException(this, "404", "Not Found", url, properties);
     if (properties.containsKey("page")) return decodedResponse;
     int page = 2;
-    dynamic pageResponse = [-1];
+    var pageResponse = [-1];
     while (pageResponse.isNotEmpty && page <= pageCap) {
       pageResponse =
           JSON.decode((await _client.get("$url&page=$page")).body).values.first;
@@ -38,18 +38,18 @@ abstract class QueryBuilder {
     return this;
   }
 
-  Future<dynamic> _findProduct(dynamic id) async {
+  Future<List> _findProduct(dynamic id) async {
     final String url = "$apiUrl/$endpoint/$id";
-    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    final decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
   }
 
-  Future<dynamic> _findGeneral(String id) async {
+  Future<List> _findGeneral(String id) async {
     final String url = "$apiUrl/$id";
-    final dynamic decodedResponse = JSON.decode((await _client.get(url)).body);
+    final decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
@@ -75,18 +75,18 @@ abstract class QueryBuilder {
 class Card extends QueryBuilder {
   String get endpoint => 'cards';
 
-  Future<dynamic> find(int id) async => await super._findProduct(id);
+  Future<List> find(int id) async => await super._findProduct(id);
 
-  Future<dynamic> subtypes() async => super._findGeneral("subtypes");
-  Future<dynamic> supertypes() async => super._findGeneral("supertypes");
-  Future<dynamic> types() async => super._findGeneral("types");
-  Future<dynamic> formats() async => super._findGeneral("formats");
+  Future<List> subtypes() async => super._findGeneral("subtypes");
+  Future<List> supertypes() async => super._findGeneral("supertypes");
+  Future<List> types() async => super._findGeneral("types");
+  Future<List> formats() async => super._findGeneral("formats");
 }
 
 class Set extends QueryBuilder {
   String get endpoint => 'sets';
 
-  Future<dynamic> find(String id) async => await super._findProduct(id);
+  Future<List> find(String id) async => await super._findProduct(id);
 
-  Future<dynamic> generateBooster(String id) async => await super._findGeneral("$id/booster");
+  Future<List> generateBooster(String id) async => await super._findGeneral("$id/booster");
 }
