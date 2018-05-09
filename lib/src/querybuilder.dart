@@ -10,6 +10,8 @@ const String apiUrl = "http://api.magicthegathering.io/v1";
 
 abstract class QueryBuilder {
   String get endpoint;
+  bool exceptions = true;
+  bool _safequery = false;
 
   Future<List> where(Map<String, dynamic> properties,
       {pageStart: 1, pageCap: double.MAX_FINITE}) async {
@@ -19,17 +21,16 @@ abstract class QueryBuilder {
       multiPage = false;
     }
     final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
-    print(url);
     var decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
+    if (decodedResponse.containsKey("error") && safe)
       throw new WhereException(this, decodedResponse["status"],
           decodedResponse["error"], url, properties);
     decodedResponse = decodedResponse.values.first;
-    if (decodedResponse.isEmpty)
+    if (decodedResponse.isEmpty && safe)
       throw new WhereException(this, "404", "Not Found", url, properties);
     if (multiPage) {
       int page = pageStart + 1;
-      List pageResponse = [-1];
+      List<Map> pageResponse = [-1];
       while (pageResponse.isNotEmpty && page <= pageCap) {
         pageResponse = JSON
             .decode((await _client.get("$url&page=$page")).body)
@@ -45,7 +46,7 @@ abstract class QueryBuilder {
   Future<Map> _findProduct(var id) async {
     final String url = "$apiUrl/$endpoint/$id";
     final decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
+    if (decodedResponse.containsKey("error") && safe)
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
@@ -54,7 +55,7 @@ abstract class QueryBuilder {
   Future<List> _findGeneral(String id) async {
     final String url = "$apiUrl/$id";
     final decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error"))
+    if (decodedResponse.containsKey("error") && safe)
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
@@ -63,15 +64,9 @@ abstract class QueryBuilder {
   String _assembleProperties(Map<String, dynamic> properties) {
     String query = "";
     for (String p in properties.keys) {
-      String formatted = "";
-      if (properties[p] is List) {
-        for (var i in properties[p]) {
-          formatted += i.toString();
-          if (i != properties[p].last) formatted += ",";
-        }
-
-        properties[p] = formatted;
-      }
+      if (properties[p] is List)
+        properties[p] =
+            properties[p].toString().substring(1, properties[p].length - 1);
       query += "&$p=${properties[p]}";
     }
     return query;
