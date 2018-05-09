@@ -29,20 +29,19 @@ class WhereException extends QueryException {
       : super(queryType, status, error, url, properties);
 
   Future<dynamic> debug404() async {
-    if (status == "404") {
-      dynamic failedProperties = {};
-      if (!properties.keys.contains("pageSize") && !properties.keys.contains("page"))
-        for (var property in properties.keys) {
-          try {
-            await queryType
-                .where({"page": 1, "pageSize": "1", property: properties[property]});
-          } catch (e) {
-            if (e.status == "404")
-              failedProperties[property] = properties[property];
-          }
+    if (properties.length == 1) return properties;
+    if (status != "404") return {};
+    dynamic failedProperties = {};
+    if (!properties.keys.contains("pageSize") &&
+        !properties.keys.contains("page"))
+      for (String property in properties.keys)
+        try {
+          await queryType.where(
+              {"page": 1, "pageSize": "1", property: properties[property]});
+        } catch (e) {
+          if (e.status == "404")
+            failedProperties[property] = properties[property];
         }
-      return failedProperties;
-    }
-    return {};
+    return failedProperties;
   }
 }

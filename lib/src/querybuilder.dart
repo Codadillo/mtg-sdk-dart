@@ -10,10 +10,16 @@ const String apiUrl = "http://api.magicthegathering.io/v1";
 
 abstract class QueryBuilder {
   String get endpoint;
-  num pageCap = double.MAX_FINITE;
 
-  Future<List> where(Map<String, dynamic> properties) async {
+  Future<List> where(Map<String, dynamic> properties,
+      {pageStart: 1, pageCap: double.MAX_FINITE}) async {
+    bool multiPage = true;
+    if (properties.containsKey("page")) {
+      properties["page"] = pageStart;
+      multiPage = false;
+    }
     final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
+    print(url);
     var decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
       throw new WhereException(this, decodedResponse["status"],
@@ -21,24 +27,22 @@ abstract class QueryBuilder {
     decodedResponse = decodedResponse.values.first;
     if (decodedResponse.isEmpty)
       throw new WhereException(this, "404", "Not Found", url, properties);
-    if (properties.containsKey("page")) return decodedResponse;
-    int page = 2;
-    var pageResponse = [-1];
-    while (pageResponse.isNotEmpty && page <= pageCap) {
-      pageResponse =
-          JSON.decode((await _client.get("$url&page=$page")).body).values.first;
-      decodedResponse.addAll(pageResponse);
-      ++page;
+    if (multiPage) {
+      int page = pageStart + 1;
+      List pageResponse = [-1];
+      while (pageResponse.isNotEmpty && page <= pageCap) {
+        pageResponse = JSON
+            .decode((await _client.get("$url&page=$page")).body)
+            .values
+            .first;
+        decodedResponse.addAll(pageResponse);
+        ++page;
+      }
     }
     return decodedResponse;
   }
 
-  QueryBuilder resultSize(int pageCap) {
-    this.pageCap = pageCap;
-    return this;
-  }
-
-  Future<List> _findProduct(var id) async {
+  Future<Map> _findProduct(var id) async {
     final String url = "$apiUrl/$endpoint/$id";
     final decodedResponse = JSON.decode((await _client.get(url)).body);
     if (decodedResponse.containsKey("error"))
@@ -57,18 +61,20 @@ abstract class QueryBuilder {
   }
 
   String _assembleProperties(Map<String, dynamic> properties) {
-    String a = "";
-    for (var f in properties.keys) {
-      a += "&$f=";
-      if (properties[f] is List)
-        for (var r in properties[f]) {
-          a += r;
-          if (r != properties[f].last) a += ",";
+    String query = "";
+    for (String p in properties.keys) {
+      String formatted = "";
+      if (properties[p] is List) {
+        for (var i in properties[p]) {
+          formatted += i.toString();
+          if (i != properties[p].last) formatted += ",";
         }
-      else
-        a += properties[f].toString();
+
+        properties[p] = formatted;
+      }
+      query += "&$p=${properties[p]}";
     }
-    return a;
+    return query;
   }
 }
 
@@ -81,8 +87,7 @@ class Card extends QueryBuilder {
     return _singleton;
   }
 
-  Future<List> find(int id) async => await super._findProduct(id);
-
+  Future<Map> find(int id) async => await super._findProduct(id);
   Future<List> subtypes() async => super._findGeneral("subtypes");
   Future<List> supertypes() async => super._findGeneral("supertypes");
   Future<List> types() async => super._findGeneral("types");
@@ -98,8 +103,7 @@ class Set extends QueryBuilder {
     return _singleton;
   }
 
-
-  Future<List> find(String id) async => await super._findProduct(id);
-
-  Future<List> generateBooster(String id) async => await super._findGeneral("$id/booster");
+  Future<Map> find(String id) async => await super._findProduct(id);
+  Future<List> generateBooster(String id) async =>
+      await super._findGeneral("$id/booster");
 }

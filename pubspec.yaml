@@ -1,7 +1,7 @@
 name: mtg_sdk
 description: An sdk for api.magicthegathering.io
 version: 0.0.1
-#author: Codadillo
+author: Codadillo
 
 environment:
   sdk: '>=1.20.1 <2.0.0'
