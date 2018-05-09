@@ -139,9 +139,15 @@ Future<void> main() async {
     OUTPUT:
     Failed properties: {name: I'maboutto404}
 
-If you would like to do error handling yourself or simply do not want errors to be thrown, set the exceptions property to false.
+If you would like to do error handling yourself or simply do not want errors to be thrown, you can do any of the following. Setting exceptions to false is the recommended of the below, considering that you will likely consistently want or not want errors to be thrown.
 
 ```dart
 sets.exceptions = false;
 cards.exceptions = false;
+// OR
+sets.safe().find("DOM");
+cards.safe().where({});
+// OR
+safeSets.where({});
+safeCards.find(3369);
 ```

@@ -1,3 +1,3 @@
 library mtg_sdk;
 
-export 'src/querybuilder.dart' show cards, sets;
+export 'src/querybuilder.dart' show cards, sets, safeCards, safeSets;

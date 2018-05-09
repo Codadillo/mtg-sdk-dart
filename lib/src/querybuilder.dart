@@ -5,13 +5,14 @@ import 'query_exceptions.dart';
 
 final Client _client = new Client();
 final Card cards = new Card();
+final Card safeCards = new Card(s: false);
 final Set sets = new Set();
+final Set safeSets = new Set(s: false);
 const String apiUrl = "http://api.magicthegathering.io/v1";
 
 abstract class QueryBuilder {
   String get endpoint;
   bool exceptions = true;
-  bool _safequery = false;
 
   Future<List> where(Map<String, dynamic> properties,
       {pageStart: 1, pageCap: double.MAX_FINITE}) async {
@@ -71,15 +72,15 @@ abstract class QueryBuilder {
     }
     return query;
   }
+
+  QueryBuilder safe();
 }
 
 class Card extends QueryBuilder {
-  Card._internal();
-  static final Card _singleton = new Card._internal();
   String get endpoint => 'cards';
 
-  factory Card() {
-    return _singleton;
+  Card({bool s: true}) {
+    this.exceptions = s;
   }
 
   Future<Map> find(int id) async => await super._findProduct(id);
@@ -87,18 +88,18 @@ class Card extends QueryBuilder {
   Future<List> supertypes() async => super._findGeneral("supertypes");
   Future<List> types() async => super._findGeneral("types");
   Future<List> formats() async => super._findGeneral("formats");
+  QueryBuilder safe() => safeCards;
 }
 
 class Set extends QueryBuilder {
-  Set._internal();
-  static final Set _singleton = new Set._internal();
   String get endpoint => 'sets';
 
-  factory Set() {
-    return _singleton;
+  Set({bool s: true}) {
+    this.exceptions = s;
   }
 
   Future<Map> find(String id) async => await super._findProduct(id);
   Future<List> generateBooster(String id) async =>
       await super._findGeneral("$id/booster");
+  QueryBuilder safe() => safeSets;
 }
