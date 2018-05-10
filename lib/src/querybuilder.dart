@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'query_exceptions.dart';
+import 'package:json_object/json_object.dart';
 
 final Client _client = new Client();
 final Card cards = new Card();
@@ -23,11 +24,11 @@ abstract class QueryBuilder {
     }
     final String url = "$apiUrl/$endpoint?${_assembleProperties(properties)}";
     var decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error") && safe)
+    if (decodedResponse.containsKey("error") && exceptions)
       throw new WhereException(this, decodedResponse["status"],
           decodedResponse["error"], url, properties);
     decodedResponse = decodedResponse.values.first;
-    if (decodedResponse.isEmpty && safe)
+    if (decodedResponse.isEmpty && exceptions)
       throw new WhereException(this, "404", "Not Found", url, properties);
     if (multiPage) {
       int page = pageStart + 1;
@@ -47,7 +48,7 @@ abstract class QueryBuilder {
   Future<Map> _findProduct(var id) async {
     final String url = "$apiUrl/$endpoint/$id";
     final decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error") && safe)
+    if (decodedResponse.containsKey("error") && exceptions)
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;
@@ -56,7 +57,7 @@ abstract class QueryBuilder {
   Future<List> _findGeneral(String id) async {
     final String url = "$apiUrl/$id";
     final decodedResponse = JSON.decode((await _client.get(url)).body);
-    if (decodedResponse.containsKey("error") && safe)
+    if (decodedResponse.containsKey("error") && exceptions)
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
     return decodedResponse.values.first;

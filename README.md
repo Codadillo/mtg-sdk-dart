@@ -13,7 +13,7 @@ This library is all asynchronous, so familarizing yourself with dart:async at ht
 ## cards
 
 ### cards.where(Map properties)
-cards.where() returns a list of all cards with specefied properties. The cards are represented by a map of all their properties. It takes in one parameter which is a map of all desired properties. Note that in all queries capitilization is unnecessary.
+cards.where() returns a list of all cards with specefied properties. The cards are represented by a map of all their properties. It takes in one parameter which is a map of all desired properties. Note that in all queries capitilization is unnecessary, but correct capitilization is necessary when accessing the json.
 A list of all properties can be found at https://docs.magicthegathering.io/#api_v1cards_list.
 
 ```dart
