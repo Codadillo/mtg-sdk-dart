@@ -15,7 +15,7 @@ abstract class QueryBuilder {
   String get endpoint;
   bool exceptions = true;
 
-  Future<List> where(Map<String, dynamic> properties,
+  Future<JsonObject> where(Map<String, dynamic> properties,
       {pageStart: 1, pageCap: double.MAX_FINITE}) async {
     bool multiPage = true;
     if (properties.containsKey("page")) {
@@ -42,7 +42,7 @@ abstract class QueryBuilder {
         ++page;
       }
     }
-    return decodedResponse;
+    return new JsonObject.fromMap({"objects": decodedResponse}).objects;
   }
 
   Future<Map> _findProduct(var id) async {
