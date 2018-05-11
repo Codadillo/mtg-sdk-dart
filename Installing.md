@@ -13,4 +13,4 @@ or for flutter:
         $ flutter packages get
 
 All set! Now just import it and get started!
-        import 'packages:mtg-sdk/mtg-sdk.dart
+        import 'packages:mtg_sdk/mtg_sdk.dart
