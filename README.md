@@ -20,7 +20,7 @@ A list of all properties for cards can be found at https://docs.magicthegatherin
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   List<Map> stdcounters = await cards.where({"gameFormat": "standard", "legality": "legal", "text": "counter target"});
   stdcounters.forEach((e) => print(e["name"]));
 }
@@ -44,7 +44,7 @@ cards.find() returns a map of all the properties of the desired card. It takes i
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   print(await cards.find(3369)["name"]);
 }
 ```
@@ -58,7 +58,7 @@ cards.formats(), cards.types(), cards.supertypes(), and cards.subtypes() are gen
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   print(await cards.formats());
 }
 ```
@@ -73,7 +73,7 @@ sets.where() is identical to cards.where(), except it queries all sets. A list o
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   un = await sets.where({"border": "silver"});
   un.foreach((e) => print(e["name"]));
 }
@@ -86,7 +86,7 @@ sets.find() functions the same as cards.find(), except the parameter required is
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   print(await sets.find("UST")["name"]);
 }
 ```
@@ -98,7 +98,7 @@ sets.generateBooster() returns a simulated booster pack opening of a desired pro
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   hmlpack = await sets.generateBooster("HML");
   hmlpack.foreach((e) => print(e["name"]))
 }
@@ -111,7 +111,7 @@ If you make a query and there is an error with it, (most commonly no cards found
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   await cards.where({"name": "I'maboutto404", "colors": ["blue"], "power": 2});
 }
 ```
@@ -127,7 +127,7 @@ If you have a 404 and suspect that there may be a typo, you can call debug404() 
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<null> main() async {
+Future<void> main() async {
   try {
     await cards.where({"name": "I'maboutto404", "colors": ["blue"], "power": 2});
   } catch (e) {
