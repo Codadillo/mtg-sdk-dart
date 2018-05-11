@@ -151,3 +151,6 @@ cards.safe().where({});
 safeSets.where({});
 safeCards.find(3369);
 ```
+
+## Issues
+If you have any issues, you can submit a pull request or raise an issue at https://github.com/Codadillo/mtg-sdk-dart.
