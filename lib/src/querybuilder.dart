@@ -15,7 +15,7 @@ abstract class QueryBuilder {
   bool exceptions = true;
 
   Future<List> where(Map<String, dynamic> properties,
-      {pageStart: 1, pageCap: double.MAX_FINITE}) async {
+      {pageStart: 1, pageCap: double.maxFinite}) async {
     bool multiPage = true;
     if (properties.containsKey("page")) {
       properties["page"] = pageStart;
