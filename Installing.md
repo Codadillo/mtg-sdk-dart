@@ -7,11 +7,10 @@ dependencies:
     mtg_sdk: ^1.0.0
 ```
 
-And run pub get on the command line in the same folder as your pubspec.
-```
-> pub get
-Resolving dependencies...
-Got dependencies!
-```
+You can install it on the command-line with:
+        $ pub get
+or for flutter:
+        $ flutter packages get
 
-All set!
+All set! Now just import it and get started!
+        import 'packages:mtg-sdk/mtg-sdk.dart

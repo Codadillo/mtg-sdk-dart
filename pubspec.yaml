@@ -2,14 +2,14 @@ name: mtg_sdk
 description: >-
   An sdk for api.magicthegathering.io. This package is an easy way to query the official mtg api for cards and products.
 version: 1.0.0
-authors: 
-  Leo Conrad-Shah
-  Codadillo
+authors: [Leo Conrad-Shah, Codadillo]
 homepage: https://github.com/Codadillo/mtg-sdk-dart
-
 
 environment:
   sdk: '>=1.20.1 <2.0.0'
+
+dependencies:
+  http: ^0.11.3+16
 
 dev_dependencies:
   test: ^0.12.0
