@@ -2,7 +2,6 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'query_exceptions.dart';
-import 'package:json_object/json_object.dart';
 
 final Client _client = new Client();
 final Card cards = new Card();
@@ -15,7 +14,7 @@ abstract class QueryBuilder {
   String get endpoint;
   bool exceptions = true;
 
-  Future<JsonObject> where(Map<String, dynamic> properties,
+  Future<List> where(Map<String, dynamic> properties,
       {pageStart: 1, pageCap: double.MAX_FINITE}) async {
     bool multiPage = true;
     if (properties.containsKey("page")) {
@@ -27,6 +26,7 @@ abstract class QueryBuilder {
     if (decodedResponse.containsKey("error") && exceptions)
       throw new WhereException(this, decodedResponse["status"],
           decodedResponse["error"], url, properties);
+    else if (!exceptions) return decodedResponse;
     decodedResponse = decodedResponse.values.first;
     if (decodedResponse.isEmpty && exceptions)
       throw new WhereException(this, "404", "Not Found", url, properties);
@@ -42,7 +42,7 @@ abstract class QueryBuilder {
         ++page;
       }
     }
-    return new JsonObject.fromMap({"objects": decodedResponse}).objects;
+    return decodedResponse;
   }
 
   Future<Map> _findProduct(var id) async {
@@ -51,6 +51,7 @@ abstract class QueryBuilder {
     if (decodedResponse.containsKey("error") && exceptions)
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
+    else if (!exceptions) return decodedResponse;
     return decodedResponse.values.first;
   }
 
@@ -60,6 +61,7 @@ abstract class QueryBuilder {
     if (decodedResponse.containsKey("error") && exceptions)
       throw new QueryException(this, decodedResponse["status"],
           decodedResponse["error"], url, "id: $id");
+    else if (!exceptions) return decodedResponse;
     return decodedResponse.values.first;
   }
 

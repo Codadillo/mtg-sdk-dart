@@ -5,8 +5,8 @@
 # Remove the following pattern if you wish to check in your lock file
 pubspec.lock
 
-# virtual environment
-menv
+# test
+test-src/test.dart
 
 # Random things
 analysis_options.yaml

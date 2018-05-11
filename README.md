@@ -14,13 +14,13 @@ This library is all asynchronous, so familarizing yourself with dart:async at ht
 
 ### cards.where(Map properties)
 cards.where() returns a list of all cards with specefied properties. The cards are represented by a map of all their properties. It takes in one parameter which is a map of all desired properties. Note that in all queries capitilization is unnecessary, but correct capitilization is necessary when accessing the json.
-A list of all properties can be found at https://docs.magicthegathering.io/#api_v1cards_list.
+A list of all properties for cards can be found at https://docs.magicthegathering.io/#api_v1cards_list.
 
 ```dart
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   List<Map> stdcounters = await cards.where({"gameFormat": "standard", "legality": "legal", "text": "counter target"});
   stdcounters.forEach((e) => print(e["name"]));
 }
@@ -44,7 +44,7 @@ cards.find() returns a map of all the properties of the desired card. It takes i
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   print(await cards.find(3369)["name"]);
 }
 ```
@@ -58,7 +58,7 @@ cards.formats(), cards.types(), cards.supertypes(), and cards.subtypes() are gen
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   print(await cards.formats());
 }
 ```
@@ -67,13 +67,13 @@ Future<void> main() async {
 ## sets
 
 ### sets.where(Map properties)
-sets.where() is identical to cards.where(), except it queries all sets.
+sets.where() is identical to cards.where(), except it queries all sets. A list of all properties for sets can be found at https://docs.magicthegathering.io/#api_v1sets_list.
 
 ```dart
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   un = await sets.where({"border": "silver"});
   un.foreach((e) => print(e["name"]));
 }
@@ -86,19 +86,19 @@ sets.find() functions the same as cards.find(), except the parameter required is
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   print(await sets.find("UST")["name"]);
 }
 ```
 
 ### sets.generateBooster(String id)
-sets.generateBooster returns a simulated booster pack opening of a desired product. This is returned in the form of a list of all cards in the simulated booster, where each card is a map of its properties. It takes in a single paramater that is a three letter set code.
+sets.generateBooster() returns a simulated booster pack opening of a desired product. This is returned in the form of a list of all cards in the simulated booster, where each card is a map of its properties. It takes in a single paramater that is a three letter set code.
 
 ```dart
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   hmlpack = await sets.generateBooster("HML");
   hmlpack.foreach((e) => print(e["name"]))
 }
@@ -111,7 +111,7 @@ If you make a query and there is an error with it, (most commonly no cards found
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   await cards.where({"name": "I'maboutto404", "colors": ["blue"], "power": 2});
 }
 ```
@@ -127,7 +127,7 @@ If you have a 404 and suspect that there may be a typo, you can call debug404() 
 import 'package:mtg_sdk/mtg_sdk.dart';
 import 'dart:async';
 
-Future<void> main() async {
+Future<null> main() async {
   try {
     await cards.where({"name": "I'maboutto404", "colors": ["blue"], "power": 2});
   } catch (e) {
